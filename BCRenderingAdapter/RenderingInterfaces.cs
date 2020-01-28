@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BAseCamp.Rendering.Interfaces
+namespace BASeCamp.Rendering.Interfaces
 {
     //basic RenderingHandler interface. "T" is the owning type- within a project this should be a relatively universally understood type, if additional information is needed about the state of the program for drawing.
 
