@@ -12,16 +12,14 @@ namespace BASeCamp.Rendering.Interfaces
     {
         void Render(T pOwner, Object pRenderTarget, Object RenderSource, Object Element);
     }
-    public interface IStateRenderingHandler<T> : IRenderingHandler<T>
-    {
-        void RenderStats(T pOwner, Object pRenderTarget, Object RenderSource, Object Element);
-    }
+  
     /// <summary>
     /// defines a Rendering Handler. 
     /// </summary>
     /// <typeparam name="TRenderTarget">Type of this rendering form. This is the main input parameter that describes the draw routine- for example, it might be a Drawing.Graphics or even a separate class type.</typeparam>
     /// <typeparam name="TRenderSource">Type of the class instance this Handler is designed to draw. (eg. A Block, Ball, Character, tile, etc.)</typeparam>
     /// <typeparam name="TDataElement">Element type that contains additional data.</typeparam>
+    /// <typeparam name="TOwnerType">Owning type definition.</typeparam>
     public interface IRenderingHandler<in TRenderTarget, in TRenderSource, in TDataElement,in TOwnerType> : IRenderingHandler<TOwnerType> where TRenderSource : class
     {
         //rendering handler has pretty much one method- to draw to the appropriate type.
