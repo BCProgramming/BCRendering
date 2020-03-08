@@ -30,4 +30,30 @@ namespace BASeCamp.Rendering.Interfaces
     {
 
     }
+
+    //A rendering Provider is a class that accepts a Class Type, and a Data Element Type, and 
+    //attempts to give back an appropriate Rendering Handler implementation for that class and element type.
+    public interface IRenderingProvider<in T>
+    {
+        IRenderingHandler<T> GetHandler(Type ClassType, Type DrawType, Type DrawDataType);
+    }
+
+    //Concrete base class IRenderingHandler.
+    /// <summary>
+    /// abstract Rendering base class.
+    /// </summary>
+    /// <typeparam name="TClassType">The class type of the draw target. (Graphics canvas for example)</typeparam>
+    /// <typeparam name="TDrawType">Class type of the object being drawn.</typeparam>
+    /// <typeparam name="TDataType">Class type that holds additional data for the operation.</typeparam>
+    public abstract class StandardRenderingHandler<TClassType, TDrawType, TDataType,TOwnerType> : IRenderingHandler<TClassType, TDrawType, TDataType,TOwnerType> where TDrawType : class
+    {
+        public abstract void Render(TOwnerType pOwner, TClassType pRenderTarget, TDrawType Source, TDataType Element);
+
+
+        public void Render(TOwnerType pOwner, object pRenderTarget, object Element, object ElementData)
+        {
+            this.Render(pOwner, (TClassType)pRenderTarget, (TDrawType)Element, (TDataType)ElementData);
+        }
+    }
+
 }
