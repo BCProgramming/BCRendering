@@ -30,6 +30,7 @@ namespace BASeCamp.Rendering
                 {
                     if (!iterate.IsAbstract)
                     {
+                        if (iterate.Name.Contains("State")) {; }
                         foreach (var findattr in iterate.GetCustomAttributes<RenderingHandlerAttribute>())
                         {
                             if (!handlerLookup.ContainsKey(findattr.CanvasType))
@@ -56,7 +57,7 @@ namespace BASeCamp.Rendering
 
                 InitProviderDictionary = true;
                 handlerLookup = new Dictionary<Type, Dictionary<Type, IRenderingHandler<TOwnerType>>>();
-                AddTaggedHandlers(Assembly.GetExecutingAssembly());
+                AddTaggedHandlers(Assembly.GetCallingAssembly());
 
 
             }
