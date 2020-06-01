@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -48,7 +49,20 @@ namespace BASeCamp.Rendering
                 }
             }
         }
-
+        public Assembly FindCaller()
+        {
+            return Assembly.GetEntryAssembly();
+            StackTrace st = new StackTrace();
+            StackFrame[] frames = st.GetFrames();
+            for(int i=0;i<frames.Length;i++)
+            {
+                if(frames[i].GetMethod().DeclaringType.Assembly != Assembly.GetAssembly(GetType()))
+                {
+                    return frames[i].GetMethod().DeclaringType.Assembly;
+                }
+            }
+            return null;
+        }
         public IRenderingHandler<TOwnerType> GetHandler(Type ClassType, Type DrawType, Type DrawDataType)
         {
             if (!InitProviderDictionary)
@@ -57,7 +71,7 @@ namespace BASeCamp.Rendering
 
                 InitProviderDictionary = true;
                 handlerLookup = new Dictionary<Type, Dictionary<Type, IRenderingHandler<TOwnerType>>>();
-                AddTaggedHandlers(Assembly.GetCallingAssembly());
+                AddTaggedHandlers(FindCaller());
 
 
             }
@@ -68,18 +82,39 @@ namespace BASeCamp.Rendering
                     return handlerLookup[ClassType][DrawType];
                 }
                 //no? OK, let's try that again- we want to allow for base classes as well though.
+                Type Deepest = null;
+                int DeepestDepth = 0;
                 foreach (var searchtype in handlerLookup[ClassType].Keys)
                 {
                     if (searchtype.IsAssignableFrom(DrawType))
                     {
-                        return handlerLookup[ClassType][searchtype];
+                        var CurrentDepth = GetDerivationDepth(searchtype);
+                        if (Deepest == null ||  CurrentDepth > DeepestDepth)
+                        {
+                            Deepest = searchtype;
+                            DeepestDepth = CurrentDepth;
+                        }
+
                     }
                 }
+                if(Deepest==null)
+                {
+                    throw new RenderAbstractionException($"No Available Renderer for Type {DrawType.Name} On Canvas Type {ClassType.Name}");
+                }
+                //after doing the work to find it, let's implicitly slap it into the lookup dictionary, so later lookups are faster.
+                var returnresult = handlerLookup[ClassType][Deepest];
+                handlerLookup[ClassType].Add(DrawType, returnresult);
+                return returnresult;
             }
 
 
 
             return null;
+        }
+        private int GetDerivationDepth(Type CheckType)
+        {
+            if (CheckType.BaseType == typeof(Object)) return 0;
+            return 1 + GetDerivationDepth(CheckType.BaseType);
         }
         public void DrawElement(TOwnerType pOwner, Object Target, Object Element, Object ElementData)
         {
