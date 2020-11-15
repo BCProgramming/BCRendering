@@ -75,6 +75,8 @@ namespace BASeCamp.Rendering
 
 
             }
+            
+
             if (handlerLookup.ContainsKey(ClassType))
             {
                 if (handlerLookup[ClassType].ContainsKey(DrawType))
@@ -106,6 +108,7 @@ namespace BASeCamp.Rendering
                 handlerLookup[ClassType].Add(DrawType, returnresult);
                 return returnresult;
             }
+            
 
 
 
@@ -209,4 +212,5 @@ namespace BASeCamp.Rendering
             DrawParameterType = pDrawParameterType;
         }
     }
+ 
 }
