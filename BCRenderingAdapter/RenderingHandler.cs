@@ -152,6 +152,11 @@ namespace BASeCamp.Rendering
             var result = data.GetPerElementData(Instance, BuildDataInstance);
             return result;
         }
+        public void ClearExtendedData(Type DrawType, Object Instance)
+        {
+            ExtendedData data = GetExtendedData(DrawType);
+            data.SetPerElementData(Instance, null);
+        }
         //public ExtendedData extendedInfo = new ExtendedData();
     }
     public class ExtendedData
@@ -197,7 +202,9 @@ namespace BASeCamp.Rendering
         }
         public void SetPerElementData(Object Item, Object Value)
         {
-            _extendedData.Add(Item, Value);
+
+            if (Value == null) _extendedData.Remove(Item);
+            else _extendedData.Add(Item, Value);
         }
     }
     public class RenderingHandlerAttribute : Attribute

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace BASeCamp.Rendering.Interfaces
 {
+    //interesting consideration: RenderingHandler could almost be a basis for serializers, as well. Instead of rendering to a Graphics or canvas type of class, it renders to say, an XElement. 
+
+
     //basic RenderingHandler interface. "T" is the owning type- within a project this should be a relatively universally understood type, if additional information is needed about the state of the program for drawing.
 
     public interface IRenderingHandler<in T>
@@ -54,6 +57,19 @@ namespace BASeCamp.Rendering.Interfaces
         {
             this.Render(pOwner, (TClassType)pRenderTarget, (TDrawType)Element, (TDataType)ElementData);
         }
+    }
+    //idea: new interface for "adapting" handlers. 
+    //for example, if a rendering provider is available for Graphics but not SKCanvas, a IRenderingHandlerAdapter<SKCanvas,Graphics> implementation could handle the translation.
+
+    //fundamentally what it has to do is:
+
+    //Take the 
+
+    public interface IRenderHandlerAdapter<TCanvasSource,TCanvasDesired>
+    {
+        
+
+
     }
 
 }
